@@ -1,0 +1,43 @@
+name: Publish Scheduled Posts
+
+on:
+  schedule:
+    - cron: '0 14 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Rebuilds the static site from content/ into docs/. Any post in
+# content/scheduled/*.md whose front-matter date is <= today is promoted into
+# content/posts/ and rendered, so future-dated posts go live on their own date
+# with no server (this replaces the dead WordPress future-dating mechanism).
+# GitHub Pages (deploy from branch main, path /docs) serves docs/ on every push.
+# Two bugs that broke the old sister-site workflow are avoided here: the job has
+# `permissions: contents: write`, and the run blocks below are correctly indented
+# under `run: |` so the YAML parses.
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build the site (promotes any due scheduled posts)
+        run: |
+          python3 _build/generate.py
+
+      - name: Commit and push if anything changed
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add -A docs content
+          if git diff --cached --quiet; then
+            echo "no changes to publish"
+          else
+            git commit -m "Rebuild site $(date -u +%Y-%m-%d)"
+            git push
+          fi
