@@ -1,6 +1,6 @@
 # mushroomextracts.org
 
-Independent, criteria-based reviews of Lion's Mane and Reishi mushroom extracts.
+Criteria-based reviews of Lion's Mane and Reishi mushroom extracts.
 Static site hosted on GitHub Pages (deploy from branch `main`, path `/docs`).
 
 ## How it works
@@ -20,6 +20,6 @@ Static site hosted on GitHub Pages (deploy from branch `main`, path `/docs`).
     python3 _build/generate.py      # writes docs/
 
 ## Voice and safety
-Independent reviewer (Consumer-Reports style). Structure/function only, no disease
+Reviewer voice (Consumer-Reports style). Structure/function only, no disease
 claims. Never fabricate a lab/COA number or a study result. No links to other owned
 sites.

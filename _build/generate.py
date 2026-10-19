@@ -107,9 +107,8 @@ MEDICAL_DISCLAIMER = (
     "treat, cure, or prevent any disease. Individual results vary."
 )
 INDEPENDENCE_NOTE = (
-    "Mushroom Extracts is an independent, reader-supported resource. We review products "
-    "against the same published criteria and accept no sponsored placements. When we link "
-    "to a product we may note any connection."
+    "Mushroom Extracts is a reader-supported resource. Products are reviewed "
+    "against the same published criteria and no sponsored placements are accepted."
 )
 
 
@@ -342,7 +341,7 @@ analysis availability, and price per labeled serving. No sponsored placements.</
 </div></section>
 <div class="wrap">
 <div class="note">New here? Start with the <a href="/guide/">Buyer's Guide</a> to read a label
-and a COA, then see <a href="/methodology/">how we test and score</a>.</div>
+and a COA, then see <a href="/methodology/">how products are scored</a>.</div>
 <h2>Latest articles</h2>
 <div class="cards">{cards}</div>
 <p class="backlink"><a href="/articles/">Browse all articles &rarr;</a></p>
@@ -377,9 +376,9 @@ def main():
 
     core = [
         ("guide", "/guide/", "How to Choose a Mushroom Supplement: The Complete Buyer's Guide",
-         "An independent guide to reading mushroom extract labels and certificates of analysis, comparing extraction methods, and judging value."),
-        ("methodology", "/methodology/", "How We Test and Review Mushroom Supplements",
-         "Our independent, criteria-based methodology for scoring Lion's Mane and Reishi extracts."),
+         "A guide to reading mushroom extract labels and certificates of analysis, comparing extraction methods, and judging value."),
+        ("methodology", "/methodology/", "How Products Are Reviewed Here",
+         "The criteria-based method used to score Lion's Mane and Reishi extracts."),
         ("faq", "/faq/", "Mushroom Supplements FAQ",
          "Common questions about mushroom supplement quality, testing, COAs, and how to choose a product."),
         ("about", "/about/", "About Mushroom Extracts",
