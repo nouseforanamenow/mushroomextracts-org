@@ -369,7 +369,32 @@ COMPARISON_COLUMNS = [
     "COA access", "Format", "Rating",
 ]
 
+# Rating rubric, applied the same way to every row:
+# 5 stars = fruiting body, a stated extraction method, a published active-compound
+# figure, and a COA a reader can open in one click. Each one missing drops a star.
+# A polysaccharide total is NOT a beta-glucan figure and does not earn that point.
+
 LIONS_MANE_ROWS = [
+    {
+        "brand": "Eversio Wellness", "product": "Lion's Mane capsules",
+        "url": "https://www.eversiowellness.com/products/lions-mane-capsules",
+        "part": "Fruiting body, grown outdoors on hardwood",
+        "extraction": "Dual, hot water and alcohol (8:1)",
+        "actives": "Beta-glucan 35%, standardized; 350 mg per 1,000 mg serving",
+        "coa": ("yes", "One click, assayed by SGS"),
+        "format": "Capsules", "stars": 5,
+        "why": "An outside lab stands behind the published percentage.",
+    },
+    {
+        "brand": "Mushroom Revival", "product": "Focus Lion's Mane capsules",
+        "url": "https://www.mushroomrevival.com/products/focus-lions-mane-capsules",
+        "part": "Fruiting body, no mycelium on grain",
+        "extraction": "Dual; no ratio published",
+        "actives": "Beta-glucan 37.1%, printed on the product page",
+        "coa": ("yes", "One click from the product page"),
+        "format": "Capsules", "stars": 5,
+        "why": "Highest published beta-glucan in the set, with the COA next to it.",
+    },
     {
         "brand": "Oriveda", "product": "Lion's Mane extract",
         "url": "https://oriveda.com/coa.php",
@@ -390,17 +415,105 @@ LIONS_MANE_ROWS = [
         "why": "Per-lot COAs and a standardized figure on the label.",
     },
     {
+        "brand": "FreshCap", "product": "Organic Lion's Mane",
+        "url": "https://freshcap.com/products/lions-mane-capsules",
+        "part": "Fruiting body", "extraction": "Dual (14:1)",
+        "actives": "Beta-glucan 31% or higher, standardized",
+        "coa": ("no", "No COA on the site; a blog post describes the testing"),
+        "format": "Capsules, powder, stick packs", "stars": 4,
+        "why": "A strong number with nothing published to check it against.",
+    },
+    {
+        "brand": "Hifas da Terra", "product": "Mico Leo",
+        "url": "https://hifasdaterra.co.uk/products/mico-leo-extract-vitamin-c",
+        "part": "Fruiting body only",
+        "extraction": "Concentrated extract; solvent not published",
+        "actives": "Beta-(1,3)(1,6)-D-glucans 200 mg per 2 capsules; 52.34% in the COA",
+        "coa": ("yes", "Six PDFs on the product page; the glucan assay is their own lab"),
+        "format": "Capsules", "stars": 4,
+        "why": "Unusually complete documents, assayed in-house rather than outside.",
+    },
+    {
+        "brand": "Gaia Herbs", "product": "Lion's Mane Mushroom",
+        "url": "https://www.gaiaherbs.com/products/lions-mane-mushroom",
+        "part": "Fruiting body, no mycelium, grain or growing medium",
+        "extraction": "Extract; method not stated. 450 mg equals 2.5 g dried",
+        "actives": "Beta-glucans 83 mg or more per serving",
+        "coa": ("yes", "On-site results table, ISO/IEC 17025 accreditation 107080"),
+        "format": "Capsules", "stars": 4,
+        "why": "A verified minimum, but the extraction method is never named.",
+    },
+    {
         "brand": "Real Mushrooms", "product": "Lion's Mane extract",
         "url": "https://realmushrooms.com/product/lions-mane-mushroom-powder/",
         "part": "Fruiting body", "extraction": "Hot water",
-        "actives": "Beta-glucan “over 30%” guaranteed",
+        "actives": "Beta-glucan \u201cover 30%\u201d guaranteed",
         "coa": ("part", "Third-party tested, COA on request rather than one click"),
         "format": "Powder, capsules", "stars": 4,
         "why": "A real published number, a less accessible COA.",
     },
+    {
+        "brand": "Birch Boys", "product": "Organic Lion's Mane tincture",
+        "url": "https://birchboys.com/products/lions-mane-tincture",
+        "part": "Fruiting body only, hardwood-grown",
+        "extraction": "Double: water at 178\u00b0F for 72 hours, plus 95% organic cane alcohol",
+        "actives": "None for the bottled tincture; the 6% beta-glucan figure describes a reference powder",
+        "coa": ("off", "One Medallion Labs PDF, on the process page rather than the product page"),
+        "format": "Tincture", "stars": 3,
+        "why": "The clearest extraction description here, attached to the wrong number.",
+    },
+    {
+        "brand": "Terrasoul Superfoods", "product": "Lion's Mane 4:1 extract powder",
+        "url": "https://terrasoul.com/products/lion-s-mane-4-1-extract-powder",
+        "part": "Fruiting body, log-grown, \u201cnot the mycelium\u201d",
+        "extraction": "Water extracted (4:1)",
+        "actives": "Not published",
+        "coa": ("no", "Not available; the site says only that each batch is lab tested"),
+        "format": "Powder", "stars": 3,
+        "why": "Honest about the mushroom, silent about the chemistry.",
+    },
+    {
+        "brand": "NOW Foods", "product": "Lion's Mane 500 mg",
+        "url": "https://www.nowfoods.com/products/supplements/lions-mane-500-mg-veg-capsules",
+        "part": "Fruiting body", "extraction": "\u201cExtract powder\u201d; no method, no ratio",
+        "actives": "Not published; the page cites \u201cnaturally occurring beta-glucans\u201d with no figure",
+        "coa": ("no", "Not available; site search returns no COA"),
+        "format": "Capsules", "stars": 2,
+        "why": "Labelled an extract and documented like a commodity.",
+    },
+    {
+        "brand": "Swanson", "product": "Premium Organic Lion's Mane 500 mg",
+        "url": "https://www.swansonvitamins.com/p/swanson-premium-organic-lions-mane-mushroom-500-mg-60-vegan-caps",
+        "part": "Fruiting body and mycelium",
+        "extraction": "Standardized extract; no method, no ratio",
+        "actives": "Polysaccharides 40%. That is a total, not a beta-glucan figure",
+        "coa": ("no", "Not available"),
+        "format": "Capsules", "stars": 2,
+        "why": "A polysaccharide total on a mycelium blend tells you very little.",
+    },
+    {
+        "brand": "Micro Ingredients", "product": "Organic Lion's Mane powder",
+        "url": "https://www.microingredients.com/products/organic-lions-mane-mushroom-powder",
+        "part": "Fruiting body and mycelium; the substrate is not stated",
+        "extraction": "\u201cFreeze-dried extract\u201d. Freeze-drying is a drying step, not an extraction",
+        "actives": "Not published",
+        "coa": ("no", "Not available; the quality and lab-testing pages 404"),
+        "format": "Powder", "stars": 2,
+        "why": "Sold as an extract on the strength of a drying method.",
+    },
 ]
 
 REISHI_ROWS = [
+    {
+        "brand": "Eversio Wellness", "product": "Reishi capsules",
+        "url": "https://www.eversiowellness.com/products/reishi-mushroom-supplement",
+        "part": "Fruiting body, 100%",
+        "extraction": "Dual, hot water and alcohol (15:1)",
+        "actives": "Beta-glucan 45%, standardized; triterpenes 25 mg per 500 mg serving",
+        "coa": ("yes", "One click, assayed by SGS"),
+        "format": "Capsules", "stars": 5,
+        "why": "The highest standardized beta-glucan here, on an outside lab's COA.",
+    },
     {
         "brand": "Oriveda", "product": "Reishi Primo",
         "url": "https://oriveda.com/coa.php",
@@ -408,7 +521,7 @@ REISHI_ROWS = [
         "actives": "Ganoderic acids 6% or higher",
         "coa": ("yes", "Full COAs published"),
         "format": "Capsules", "stars": 5,
-        "why": "The only set member publishing a triterpene figure and the COA behind it.",
+        "why": "One of only two here publishing a triterpene figure and the COA behind it.",
     },
     {
         "brand": "Nootropics Depot", "product": "Red Reishi 8:1 / 1:1",
@@ -417,7 +530,46 @@ REISHI_ROWS = [
         "actives": "Beta-glucan 35% minimum, guaranteed; triterpenes not published as a percentage",
         "coa": ("yes", "Per-lot COA PDFs"),
         "format": "Capsules, powder", "stars": 5,
-        "why": "Highest guaranteed beta-glucan in the set, per-lot COAs.",
+        "why": "Hot water cannot carry triterpenes, and the label does not pretend otherwise.",
+    },
+    {
+        "brand": "Mushroom Revival", "product": "Calm Reishi capsules",
+        "url": "https://www.mushroomrevival.com/products/calm-reishi-mushroom-capsules",
+        "part": "Fruiting body", "extraction": "Dual; no ratio published",
+        "actives": "Beta-glucan 27.8%, printed on the product page",
+        "coa": ("yes", "One click from the product page"),
+        "format": "Capsules", "stars": 5,
+        "why": "Number on the page, COA beside it, no ratio.",
+    },
+    {
+        "brand": "FreshCap", "product": "Organic Reishi",
+        "url": "https://freshcap.com/products/reishi-capsules",
+        "part": "Fruiting body on the panel; the FAQ on the same page says fruiting body and spore",
+        "extraction": "Dual (14:1)",
+        "actives": "Beta-glucan 27% and triterpenes 1.4%, both standardized",
+        "coa": ("no", "No COA on the site; a blog post describes the testing"),
+        "format": "Capsules, powder", "stars": 4,
+        "why": "Both compound classes declared, nothing published to check them.",
+    },
+    {
+        "brand": "Hifas da Terra", "product": "Mico Rei",
+        "url": "https://hifasdaterra.co.uk/products/mico-rei-pure-eco-extract-of-reishi",
+        "part": "Fruiting body only",
+        "extraction": "Concentrated extract; solvent and ratio not published",
+        "actives": "Beta-glucans 248 mg and triterpenoids 50 mg per 2 capsules; 58% polysaccharides",
+        "coa": ("yes", "Six PDFs on the product page; the glucan assay is their own lab"),
+        "format": "Capsules", "stars": 4,
+        "why": "Milligrams for both compound classes, assayed in-house.",
+    },
+    {
+        "brand": "Gaia Herbs", "product": "Reishi Mushroom",
+        "url": "https://www.gaiaherbs.com/products/reishi-mushroom",
+        "part": "Fruiting body, no fillers, starch, grain or mycelium",
+        "extraction": "Extract; method not stated. 450 mg equals 2.5 g dried",
+        "actives": "Beta-glucans 113 mg or more per serving; no triterpene figure",
+        "coa": ("yes", "On-site results table, ISO/IEC 17025 accreditation 107080"),
+        "format": "Capsules", "stars": 4,
+        "why": "A verified minimum, but the extraction method is never named.",
     },
     {
         "brand": "Real Mushrooms", "product": "Reishi extract",
@@ -428,24 +580,94 @@ REISHI_ROWS = [
         "format": "Powder, capsules", "stars": 4,
         "why": "Guarantee is real, the per-SKU number is not yet confirmed.",
     },
+    {
+        "brand": "Birch Boys", "product": "Organic Reishi tincture",
+        "url": "https://birchboys.com/products/reishi-tincture",
+        "part": "Fruiting body only, wild-harvested. The species is Ganoderma tsugae, not G. lucidum",
+        "extraction": "Double: water at 178\u00b0F for 72 hours, plus 95% organic cane alcohol",
+        "actives": "None for the bottled tincture; the 4% beta-glucan figure describes a reference powder",
+        "coa": ("off", "One Medallion Labs PDF, on the process page rather than the product page"),
+        "format": "Tincture", "stars": 3,
+        "why": "A different species from every other row, which is worth knowing before you compare.",
+    },
+    {
+        "brand": "Double Wood", "product": "Reishi Mushroom Extract",
+        "url": "https://doublewoodsupplements.com/products/reishi-mushroom-extract",
+        "part": "Fruiting body and mycelium",
+        "extraction": "4:1 extract; solvent not stated",
+        "actives": "Not published; triterpenoids and polysaccharides named with no figure",
+        "coa": ("yes", "Published inline with a lot lookup, but it assays identity, metals and micro, not actives"),
+        "format": "Capsules", "stars": 3,
+        "why": "A COA that answers a different question than the one on the label.",
+    },
+    {
+        "brand": "Terrasoul Superfoods", "product": "Reishi 4:1 extract powder",
+        "url": "https://terrasoul.com/products/reishi-4-1-extract-powder",
+        "part": "Fruiting body, log-grown, \u201cnot the mycelium\u201d",
+        "extraction": "Water extracted (4:1)",
+        "actives": "Polysaccharides 20% minimum. That is a total, not a beta-glucan figure",
+        "coa": ("no", "Not available; the site says only that each batch is lab tested"),
+        "format": "Powder", "stars": 3,
+        "why": "Good sourcing disclosure, a number that cannot be compared.",
+    },
+    {
+        "brand": "Swanson", "product": "Superior Herbs Reishi Extract 500 mg",
+        "url": "https://www.swansonvitamins.com/p/swanson-superior-herbs-reishi-mushroom-extract-500-mg-90-caps",
+        "part": "Fruiting body",
+        "extraction": "Extract; no method, no ratio",
+        "actives": "Polysaccharides 10%. That is a total, not a beta-glucan figure",
+        "coa": ("no", "Not available"),
+        "format": "Capsules", "stars": 2,
+        "why": "The lowest standardization figure here, and it is the wrong measurement.",
+    },
+    {
+        "brand": "Micro Ingredients", "product": "Organic Reishi powder",
+        "url": "https://www.microingredients.com/products/organic-reishi-mushroom-powder",
+        "part": "Not stated anywhere on the page",
+        "extraction": "100:1 ratio claimed; method not stated",
+        "actives": "Not published; beta-glucans named with no figure",
+        "coa": ("no", "Not available; the quality and lab-testing pages 404"),
+        "format": "Powder", "stars": 1,
+        "why": "The biggest ratio claim in the set with the least behind it.",
+    },
 ]
 
 EXCLUDED_ROWS = [
-    ("Host Defense", "Mycelium grown on brown rice. Guarantees “over 55% polysaccharides” "
-     "and discloses no beta-glucan figure. Polysaccharide totals include the grain starch, "
-     "so they are not comparable to a beta-glucan percentage."),
-    ("Om Mushrooms", "Mycelial biomass and gummies, not a concentrated extract."),
+    ("Host Defense", "Mycelium grown on fermented brown rice, milled rather than extracted. Their own FAQ: "
+     "\u201cwe don\u2019t isolate or concentrate any particular compounds in our powdered products.\u201d "
+     "The \u201cover 55% polysaccharides\u201d guarantee is a polysaccharide total on a rice matrix, not a "
+     "beta-glucan figure. Their liquid extracts do contain fruiting body, but as a proprietary blend with no ratio."),
+    ("Om Mushrooms", "Mycelial biomass and fruit body cultured on whole oats, with the oats included in the "
+     "2 g serving. Their own FAQ: \u201cNo. We don\u2019t use hot water or alcohol extraction.\u201d"),
+    ("Genius Mushrooms", "Mycelium on oats, and extract-free by design: \u201cMade with 100% extract-free, "
+     "100% organic mushrooms.\u201d"),
+    ("Solaray", "Fermented mycelium cultured on whole oats or brown rice. No extraction method and no ratio published."),
+    ("Nutricost", "Labelled mushroom powder, not an extract. No method, no ratio, no actives figure."),
+    ("Swanson Full Spectrum", "Their own page: \u201ccontains whole reishi mushroom rather than a concentrated extract.\u201d"),
+    ("Double Wood Lion\u2019s Mane", "Their own answer on the product page: \u201cThis product is not an extract. "
+     "Our Lions Mane is ground up Lions Mane.\u201d The Reishi product is a 4:1 extract and is scored above."),
+    ("Toniiq", "Publishes the best single document in this whole survey, a one-click COA with a Megazyme "
+     "beta-glucan assay, but the product page calls it whole mushroom powder and states no extraction method, "
+     "so it cannot be scored as an extract."),
+    ("Sun Potion", "Their own spec table: \u201cFull-spectrum mushroom powder (not an extract)\u201d, despite "
+     "publishing 52.2% beta-glucans on a recent Lion\u2019s Mane lot."),
+    ("Four Sigmatic", "No single-species Lion\u2019s Mane or Reishi extract. Every mushroom product is a blend, "
+     "coffee, cocoa or elixir packet."),
+    ("NOW Rei-Shi", "A reishi and shiitake blend, not a single-species reishi extract. NOW\u2019s Lion\u2019s Mane "
+     "is a single-species extract and is scored above."),
+    ("Gummies, coffees and drink mixes", "Excluded as a format across every brand in the survey."),
 ]
 
 PENDING_BRANDS = [
-    "Four Sigmatic", "FreshCap (Thrive)", "Double Wood", "Nutricost", "Toniiq",
-    "Nammex-supplied private labels",
+    "Naturealm / Sacred 7 (the brand site is a parked page and sacred7.com redirects away, "
+    "so nothing the brand publishes can be read)",
 ]
 
 
 def _coa_cell(kind, text):
-    cls = {"yes": "yes", "part": "unk", "no": "no"}[kind]
-    label = {"yes": "Published", "part": "On request", "no": "Not available"}[kind]
+    cls = {"yes": "yes", "part": "unk", "off": "unk", "no": "no"}[kind]
+    label = {"yes": "Published", "part": "On request",
+             "off": "Published off-page", "no": "Not available"}[kind]
     return f'<span class="{cls}">{label}</span><br><span class="scoreno">{html.escape(text)}</span>'
 
 
@@ -473,37 +695,49 @@ def _comparison_table(rows):
 
 def comparison_html():
     excluded = "".join(
-        f"<li><strong>{html.escape(n)}</strong> &mdash; {html.escape(t)}</li>"
+        f"<li><strong>{html.escape(n)}</strong> &mdash; {t}</li>"
         for n, t in EXCLUDED_ROWS)
-    pending = ", ".join(html.escape(b) for b in PENDING_BRANDS)
+    pending = "".join(f"<li>{html.escape(b)}</li>" for b in PENDING_BRANDS)
     return f"""
-<h2 id="compare">Lion's Mane extracts compared</h2>
-<p>Every figure below is quoted from the brand's own published product page or certificate of
+<div class="note"><strong>What is in scope.</strong> Concentrated extracts only: hot water,
+alcohol, or both. Milled mycelium grown on grain, plain mushroom powder, blends, coffees and
+gummies are not extracts, whatever the label says, so they are listed further down with the
+brand&#39;s own wording and the reason, rather than scored against products that are.</div>
+
+<h2 id="compare">Lion&#39;s Mane extracts compared</h2>
+<p>Every figure is quoted from the brand&#39;s own product page or its own certificate of
 analysis. Where a number is not published, the cell says so instead of carrying an estimate.
-Rating is the five-criteria score set out in our <a href="/methodology/">methodology</a>:
-part used, extraction, documented active-compound testing, COA access and value.</p>
+<strong>Five stars</strong> means all four of: fruiting body, a stated extraction method, a
+published active-compound figure, and a COA you can open in one click. Each one missing drops
+a star. A polysaccharide total is not a beta-glucan figure and does not earn that point, which
+is why two brands advertising 40% and 20% sit near the bottom.</p>
 {_comparison_table(LIONS_MANE_ROWS)}
 
 <h2 id="compare-reishi">Reishi extracts compared</h2>
-<p>Reishi is scored on the same five criteria, with one difference: a hot-water-only Reishi
-cannot carry triterpenes, so a published ganoderic-acid figure counts here and does not on
-Lion's Mane.</p>
+<p>Same four criteria, with one difference: a hot-water-only Reishi cannot carry triterpenes,
+so a published ganoderic-acid or triterpene figure counts here and does not on Lion&#39;s Mane.
+Two brands in this table publish one.</p>
 {_comparison_table(REISHI_ROWS)}
 
 <div class="commercial">
 <span class="marker">Commercial link: we sell this product</span>
-Ahara Mushrooms sells an alcohol-free liquid Reishi and Lion's Mane extract, which is one more
+Ahara Mushrooms sells an alcohol-free liquid Reishi and Lion&#39;s Mane extract, which is one more
 option in this format and is not scored in the tables above.
 <a href="https://aharamushrooms.com/" target="_blank" rel="sponsored noopener">aharamushrooms.com</a>
 </div>
 
-<h3>Excluded from the extract comparison, and why</h3>
+<h2>Sold as extracts, but not extracts</h2>
+<p>These are the products a shopper most often puts side by side with the tables above. Each one
+is quoted from the brand&#39;s own page, because in almost every case the brand says it plainly
+and the marketing says something else.</p>
 <ul>{excluded}</ul>
 
-<p class="pending"><strong>Not yet scored:</strong> {pending}. These are extract-labelled products
-whose active-compound testing we have not been able to confirm from a published COA. They enter
-the tables when that documentation is in hand, with whatever it shows.</p>
+<h3>Could not be checked</h3>
+<ul class="pending">{pending}</ul>
+<p class="pending">A brand enters the tables when its own documentation is in hand, with whatever
+it shows. Nothing here is filled in from a retailer listing or a review site.</p>
 """
+
 
 def build_home(posts):
     comparison = comparison_html()
@@ -515,10 +749,10 @@ def build_home(posts):
     body = f"""
 <section class="hero"><div class="wrap">
 <h1>Lion&#39;s Mane and Reishi extracts, compared on published numbers</h1>
-<p>Every product here is judged against the same five criteria: species and part used,
-extraction method, documented active-compound testing, certificate of analysis access, and
-price per labeled serving. Figures come from the brand&#39;s own page or COA. A number nobody
-publishes is recorded as not published, never estimated.</p>
+<p>Twenty-six extracts, judged on the four things a shopper can actually check: the part of
+the mushroom used, the extraction method, the active-compound figure the brand publishes, and
+whether you can open a certificate of analysis. Every figure comes from the brand&#39;s own page
+or COA. A number nobody publishes is recorded as not published, never estimated.</p>
 </div></section>
 <div class="wrap wide">
 {comparison}
