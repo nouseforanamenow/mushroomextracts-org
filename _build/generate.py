@@ -38,6 +38,7 @@ TODAY = datetime.date.today().isoformat()
 
 NAV = [
     ("/", "Home"),
+    ("/compare/", "Compare"),
     ("/articles/", "Articles"),
     ("/guide/", "Buyer's Guide"),
     ("/methodology/", "Methodology"),
@@ -156,7 +157,7 @@ def footer_html():
     links = " |\n".join(f'<a href="{h}">{html.escape(l)}</a>' for h, l in NAV)
     return ("<footer><div class=\"footer-content\">"
             f"<p>&copy; {datetime.date.today().year} {html.escape(SITE_NAME)}. "
-            "Independent reviews of mushroom supplements.</p>"
+            "Lion&#39;s Mane and Reishi extracts, compared on published numbers.</p>"
             f"<p>{links}</p>"
             f'<div class="disclaimer"><p>{INDEPENDENCE_NOTE}</p><p>{MEDICAL_DISCLAIMER}</p></div>'
             "</div></footer>")
@@ -693,18 +694,25 @@ def _comparison_table(rows):
             f"<tbody>{body}</tbody></table></div>")
 
 
-def comparison_html():
-    excluded = "".join(
-        f"<li><strong>{html.escape(n)}</strong> &mdash; {t}</li>"
-        for n, t in EXCLUDED_ROWS)
-    pending = "".join(f"<li>{html.escape(b)}</li>" for b in PENDING_BRANDS)
-    return f"""
-<div class="note"><strong>What is in scope.</strong> Concentrated extracts only: hot water,
-alcohol, or both. Milled mycelium grown on grain, plain mushroom powder, blends, coffees and
-gummies are not extracts, whatever the label says, so they are listed further down with the
-brand&#39;s own wording and the reason, rather than scored against products that are.</div>
+SCOPE_NOTE = """<div class="note"><strong>What is in scope.</strong> Concentrated extracts only:
+hot water, alcohol, or both. Milled mycelium grown on grain, plain mushroom powder, blends,
+coffees and gummies are not extracts, whatever the label says, so they are listed separately
+with the brand&#39;s own wording and the reason, rather than scored against products that are.</div>"""
 
-<h2 id="compare">Lion&#39;s Mane extracts compared</h2>
+COMMERCIAL_BLOCK = """<div class="commercial">
+<span class="marker">Commercial link: we sell this product</span>
+Ahara Mushrooms sells an alcohol-free liquid Reishi and Lion&#39;s Mane extract, which is one more
+option in this format and is not scored in the tables above.
+<a href="https://aharamushrooms.com/" target="_blank" rel="sponsored noopener">aharamushrooms.com</a>
+</div>"""
+
+
+def comparison_tables(heading_level="h2"):
+    h = heading_level
+    return f"""
+{SCOPE_NOTE}
+
+<{h} id="compare">Lion&#39;s Mane extracts compared</{h}>
 <p>Every figure is quoted from the brand&#39;s own product page or its own certificate of
 analysis. Where a number is not published, the cell says so instead of carrying an estimate.
 <strong>Five stars</strong> means all four of: fruiting body, a stated extraction method, a
@@ -713,34 +721,135 @@ a star. A polysaccharide total is not a beta-glucan figure and does not earn tha
 is why two brands advertising 40% and 20% sit near the bottom.</p>
 {_comparison_table(LIONS_MANE_ROWS)}
 
-<h2 id="compare-reishi">Reishi extracts compared</h2>
+<{h} id="compare-reishi">Reishi extracts compared</{h}>
 <p>Same four criteria, with one difference: a hot-water-only Reishi cannot carry triterpenes,
 so a published ganoderic-acid or triterpene figure counts here and does not on Lion&#39;s Mane.
 Two brands in this table publish one.</p>
 {_comparison_table(REISHI_ROWS)}
 
-<div class="commercial">
-<span class="marker">Commercial link: we sell this product</span>
-Ahara Mushrooms sells an alcohol-free liquid Reishi and Lion&#39;s Mane extract, which is one more
-option in this format and is not scored in the tables above.
-<a href="https://aharamushrooms.com/" target="_blank" rel="sponsored noopener">aharamushrooms.com</a>
-</div>
+{COMMERCIAL_BLOCK}
+"""
 
-<h2>Sold as extracts, but not extracts</h2>
-<p>These are the products a shopper most often puts side by side with the tables above. Each one
+
+def comparison_home():
+    return comparison_tables() + """
+<p class="backlink"><a href="/compare/">Full comparison: how every cell was checked, the nine
+brands that do not sell an extract at all, and the source for each figure &rarr;</a></p>
+"""
+
+
+def _source_list():
+    seen, items = set(), []
+    for r in LIONS_MANE_ROWS + REISHI_ROWS:
+        if r["url"] in seen:
+            continue
+        seen.add(r["url"])
+        items.append(f'<li>{html.escape(r["brand"])}, {html.escape(r["product"])} &mdash; '
+                     f'<a href="{r["url"]}" target="_blank" rel="noopener nofollow">{html.escape(r["url"])}</a></li>')
+    return "".join(items)
+
+
+def comparison_full():
+    excluded = "".join(
+        f"<li><strong>{html.escape(n)}</strong> &mdash; {t}</li>"
+        for n, t in EXCLUDED_ROWS)
+    pending = "".join(f"<li>{html.escape(b)}</li>" for b in PENDING_BRANDS)
+    return comparison_tables() + f"""
+<h2 id="not-extracts">Sold as extracts, but not extracts</h2>
+<p>Nine of the twenty brands checked do not sell a concentrated extract of either species.
+These are the products a shopper most often puts side by side with the tables above. Each one
 is quoted from the brand&#39;s own page, because in almost every case the brand says it plainly
 and the marketing says something else.</p>
 <ul>{excluded}</ul>
 
-<h3>Could not be checked</h3>
+<h2 id="method">How each cell was checked</h2>
+<p>One pass, 2026-11-11, against the brand&#39;s own pages and its own COA documents. No
+retailer listing, no review site, no affiliate roundup was used as a source for any figure,
+including where the brand&#39;s own site was slow or rate-limited.</p>
+<ul>
+<li><strong>Part used</strong> is taken from the Supplement Facts panel where one exists. On
+several brands that panel is an image rather than text, so the wording was read off the label
+image on the brand&#39;s own product page.</li>
+<li><strong>Extraction</strong> counts only if the brand states a method or a ratio. &ldquo;Freeze-dried
+extract&rdquo; is a drying step, not an extraction, and is recorded as such.</li>
+<li><strong>Published actives</strong> separates beta-glucan from polysaccharides on purpose. A
+polysaccharide total on a grain-grown product includes the starch from the grain, so the two
+numbers are not comparable and are never merged into one cell.</li>
+<li><strong>COA access</strong> is Published only where a reader can open the document in one
+click. &ldquo;Third-party tested&rdquo; in body copy, a blog post about testing, or a quality page with no
+document is recorded as Not available, because none of them can be checked.</li>
+</ul>
+
+<h2 id="findings">What the survey found</h2>
+<ul>
+<li><strong>The mass-market tier publishes nothing.</strong> Across eleven product pages from
+NOW, Swanson, Solaray, Nutricost and Micro Ingredients there is not one beta-glucan percentage
+and not one COA. Where a number appears it is a polysaccharide total.</li>
+<li><strong>The COA is the dividing line, not the mushroom.</strong> Several brands publish a
+percentage with no document, and one publishes an excellent document for a product that is not
+an extract at all.</li>
+<li><strong>In-house assays are normal at the premium end.</strong> One brand in the survey sends
+metals, microbials and pesticides to an outside lab but runs its own glucan assay. Only one has
+an outside lab behind the glucan number itself.</li>
+<li><strong>Brands contradict themselves.</strong> One page calls the same product dual-extracted
+and triple-extracted; another names two species that are not in the product; a third publishes
+two different extract weights for one capsule.</li>
+<li><strong>Species substitution is real.</strong> One Reishi in the table is
+<em>Ganoderma tsugae</em>, not <em>G. lucidum</em>, which the brand discloses and most shoppers
+will not notice.</li>
+</ul>
+
+<h2 id="pending">Could not be checked</h2>
 <ul class="pending">{pending}</ul>
 <p class="pending">A brand enters the tables when its own documentation is in hand, with whatever
-it shows. Nothing here is filled in from a retailer listing or a review site.</p>
+it shows.</p>
+
+<h2 id="sources">Sources</h2>
+<p class="pending">Every scored row, with the page the figures were read from.</p>
+<ul class="pending">{_source_list()}</ul>
 """
 
 
+def comparison_jsonld():
+    items = []
+    for i, r in enumerate(LIONS_MANE_ROWS + REISHI_ROWS, start=1):
+        items.append({
+            "@type": "ListItem", "position": i,
+            "name": f'{r["brand"]} {r["product"]}', "url": r["url"],
+        })
+    return json.dumps({
+        "@context": "https://schema.org", "@type": "ItemList",
+        "name": "Lion's Mane and Reishi extracts compared",
+        "description": ("Lion's Mane and Reishi mushroom extracts compared on part used, "
+                        "extraction method, published active-compound figures and COA access."),
+        "numberOfItems": len(items), "itemListElement": items,
+    }, separators=(",", ":"))
+
+
+def build_compare_page():
+    body = f'''
+<section class="hero"><div class="wrap">
+<h1>Lion&#39;s Mane and Reishi extracts, compared</h1>
+<p>Twenty brands checked against their own product pages and their own certificates of
+analysis. Twenty-six extracts scored, nine brands found to be selling something that is not an
+extract at all, and every figure traceable to the page it came from.</p>
+</div></section>
+<div class="wrap wide">
+{comparison_full()}
+<p class="backlink"><a href="/">&larr; Home</a></p>
+</div>
+'''
+    write("/compare/", page_shell(
+        title=f"Lion's Mane & Reishi Extracts Compared: 26 Extracts, 20 Brands | {SITE_NAME}",
+        description=("Twenty-six Lion's Mane and Reishi extracts compared on part used, extraction "
+                     "method, published beta-glucan figures and COA access. Every figure from the "
+                     "brand's own page or COA."),
+        canonical=f"{BASE_URL}/compare/", body=body, active_path="/compare/",
+        jsonld=comparison_jsonld()))
+
+
 def build_home(posts):
-    comparison = comparison_html()
+    comparison = comparison_home()
     featured = sorted(posts, key=lambda x: x["date_published"], reverse=True)[:6]
     cards = "".join(
         f'<a class="card" href="{p["path"]}"><div><span class="tag">{html.escape(p["category"])}</span>'
@@ -806,18 +915,20 @@ def main():
         build_core_page(slug, nav_active, title, desc)
 
     build_home(posts)
+    build_compare_page()
     build_articles_index(posts)
 
     (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {BASE_URL}/sitemap.xml\n", encoding="utf-8")
 
-    urls = [{"path": "/", "lastmod": TODAY}, {"path": "/articles/", "lastmod": TODAY}]
+    urls = [{"path": "/", "lastmod": TODAY}, {"path": "/compare/", "lastmod": TODAY},
+            {"path": "/articles/", "lastmod": TODAY}]
     for slug, *_ in core:
         urls.append({"path": f"/{slug}/", "lastmod": TODAY})
     for p in posts:
         urls.append({"path": p["path"], "lastmod": p["date_modified"]})
     build_sitemap(urls)
 
-    print(f"Built {len(posts)} posts + {len(core)} core pages + home + articles -> {OUT}")
+    print(f"Built {len(posts)} posts + {len(core)} core pages + home + compare + articles -> {OUT}")
     print(f"CNAME={CNAME_DOMAIN or '(none)'} | sitemap urls={len(urls)}")
 
 
