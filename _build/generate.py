@@ -46,6 +46,8 @@ NAV = [
     ("/about/", "About"),
 ]
 
+INDEXNOW_KEY = "501abdd9daa95113e6a2935e66c20175"
+
 CSS = """
 :root{--ink:#374151;--dark:#172e77;--green:#7ecfd7;--green-d:#172e77;--mint:#ffffff;
 --mint2:#edf8fa;--line:#e5e7eb;--muted:#6b7280;--warn:#dc2626;--warn-bg:#fef2f2;--amber:#f59e0b;--bg:#ffffff}
@@ -896,6 +898,9 @@ def main():
     (OUT / ".nojekyll").write_text("", encoding="utf-8")
     if CNAME_DOMAIN:
         (OUT / "CNAME").write_text(CNAME_DOMAIN + "\n", encoding="utf-8")
+    # IndexNow key file. Bing, Yandex and Seznam fetch this to prove we own the host
+    # before accepting a submission, so it must survive every rebuild.
+    (OUT / "501abdd9daa95113e6a2935e66c20175.txt").write_text("501abdd9daa95113e6a2935e66c20175", encoding="utf-8")
 
     posts = load_posts()
     for p in posts:
