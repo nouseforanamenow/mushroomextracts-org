@@ -98,6 +98,24 @@ footer{border-top:1px solid var(--line);background:#fafafa;margin-top:40px;paddi
 .disclaimer{margin-top:16px;font-size:.8rem;color:#9ca3af;text-align:left;line-height:1.5}
 .disclaimer strong{color:var(--muted)}
 .backlink{display:inline-block;margin:24px 0 0;font-size:.92rem}
+.wrap.wide{max-width:1080px}
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:16px 0}
+.ctable{min-width:760px;margin:0;font-size:.9rem}
+.ctable th{font-size:.78rem;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
+.ctable td{vertical-align:top}
+.ctable tbody tr:nth-child(even){background:#fafafa}
+.brandcell{font-weight:600;color:var(--dark)}
+.brandcell span{display:block;font-weight:400;font-size:.84rem;color:var(--muted)}
+.stars{color:var(--amber);white-space:nowrap;font-size:1rem;letter-spacing:.06em}
+.scoreno{display:block;margin-top:5px;color:var(--muted);font-size:.84rem;line-height:1.45}
+.yes{color:var(--green-d);font-weight:600}
+.no{color:var(--warn);font-weight:600}
+.unk{color:var(--muted)}
+.commercial{border:1px solid var(--line);border-left:4px solid var(--amber);background:#fffbeb;
+padding:14px 16px;border-radius:6px;margin:22px 0;font-size:.93rem}
+.commercial .marker{display:block;font-size:.78rem;font-weight:600;text-transform:uppercase;
+letter-spacing:.04em;color:#92400e;margin-bottom:6px}
+.pending{font-size:.93rem;color:var(--muted)}
 """
 
 MEDICAL_DISCLAIMER = (
@@ -108,8 +126,11 @@ MEDICAL_DISCLAIMER = (
     "treat, cure, or prevent any disease. Individual results vary."
 )
 INDEPENDENCE_NOTE = (
-    "Mushroom Extracts is a reader-supported resource. Products are reviewed "
-    "against the same published criteria and no sponsored placements are accepted."
+    "Every product on this site is judged against the same published criteria: species and "
+    "part used, extraction method, documented active-compound testing, certificate of "
+    "analysis access, and price per labeled serving. Figures are quoted from the brand's own "
+    "published page or COA, and a figure we could not verify is marked as unverified rather "
+    "than estimated. Commercial links are labelled at the point of use."
 )
 
 
@@ -327,7 +348,165 @@ def build_articles_index(posts):
         canonical=f"{BASE_URL}/articles/", body=body, active_path="/articles/"))
 
 
+# ---------------------------------------------------------------------------
+# Extract comparison (homepage)
+#
+# SCOPE: concentrated extracts only (hot-water, alcohol, or dual). Mycelium-on-grain
+# biomass, whole-mushroom powders and gummies are out of scope by definition and are
+# listed under EXCLUDED instead of being scored.
+#
+# SOURCING RULE: every cell is quoted from the brand's own published product page or
+# COA. Nothing here is estimated. A figure we have not confirmed says so in the cell.
+# Source notes live in Content/11_Microsite_Overhaul/mushroomextracts/brand_coa_scan.md
+# and homepage_table_additions.md.
+#
+# AHARA is deliberately NOT a row: an owned product never enters a scored or ranked
+# table. The labelled commercial link below the tables is the approved placement.
+# ---------------------------------------------------------------------------
+
+COMPARISON_COLUMNS = [
+    "Brand / product", "Part used", "Extraction", "Published actives",
+    "COA access", "Format", "Rating",
+]
+
+LIONS_MANE_ROWS = [
+    {
+        "brand": "Oriveda", "product": "Lion's Mane extract",
+        "url": "https://oriveda.com/coa.php",
+        "part": "Fruiting body", "extraction": "Hot water (1:1)",
+        "actives": "Beta-glucan published per lot",
+        "coa": ("yes", "Full COAs published"),
+        "format": "Capsules", "stars": 5,
+        "why": "Publishes complete COAs, glucan figures included.",
+    },
+    {
+        "brand": "Nootropics Depot", "product": "Lion's Mane 1:1 fruiting body",
+        "url": "https://nootropicsdepot.com/lions-mane-mushroom-extract-capsules/",
+        "part": "Whole fruiting body, explicitly not mycelium-on-grain",
+        "extraction": "Hot water (1:1)",
+        "actives": "Beta-glucan 25%, standardized",
+        "coa": ("yes", "10 per-lot COA PDFs, with heavy-metal and microbial panels"),
+        "format": "Capsules, powder", "stars": 5,
+        "why": "Per-lot COAs and a standardized figure on the label.",
+    },
+    {
+        "brand": "Real Mushrooms", "product": "Lion's Mane extract",
+        "url": "https://realmushrooms.com/product/lions-mane-mushroom-powder/",
+        "part": "Fruiting body", "extraction": "Hot water",
+        "actives": "Beta-glucan “over 30%” guaranteed",
+        "coa": ("part", "Third-party tested, COA on request rather than one click"),
+        "format": "Powder, capsules", "stars": 4,
+        "why": "A real published number, a less accessible COA.",
+    },
+]
+
+REISHI_ROWS = [
+    {
+        "brand": "Oriveda", "product": "Reishi Primo",
+        "url": "https://oriveda.com/coa.php",
+        "part": "Fruiting body", "extraction": "Dual, alcohol-free",
+        "actives": "Ganoderic acids 6% or higher",
+        "coa": ("yes", "Full COAs published"),
+        "format": "Capsules", "stars": 5,
+        "why": "The only set member publishing a triterpene figure and the COA behind it.",
+    },
+    {
+        "brand": "Nootropics Depot", "product": "Red Reishi 8:1 / 1:1",
+        "url": "https://nootropicsdepot.com/reishi-mushroom-extract-capsules/",
+        "part": "Whole fruiting body", "extraction": "Hot water (8:1 and 1:1 lines)",
+        "actives": "Beta-glucan 35% minimum, guaranteed; triterpenes not published as a percentage",
+        "coa": ("yes", "Per-lot COA PDFs"),
+        "format": "Capsules, powder", "stars": 5,
+        "why": "Highest guaranteed beta-glucan in the set, per-lot COAs.",
+    },
+    {
+        "brand": "Real Mushrooms", "product": "Reishi extract",
+        "url": "https://realmushrooms.com/product/reishi-mushroom-powder/",
+        "part": "Fruiting body", "extraction": "Hot water",
+        "actives": "Beta-glucan guaranteed across the line; the Reishi-specific figure is unverified",
+        "coa": ("part", "Third-party tested, COA on request rather than one click"),
+        "format": "Powder, capsules", "stars": 4,
+        "why": "Guarantee is real, the per-SKU number is not yet confirmed.",
+    },
+]
+
+EXCLUDED_ROWS = [
+    ("Host Defense", "Mycelium grown on brown rice. Guarantees “over 55% polysaccharides” "
+     "and discloses no beta-glucan figure. Polysaccharide totals include the grain starch, "
+     "so they are not comparable to a beta-glucan percentage."),
+    ("Om Mushrooms", "Mycelial biomass and gummies, not a concentrated extract."),
+]
+
+PENDING_BRANDS = [
+    "Four Sigmatic", "FreshCap (Thrive)", "Double Wood", "Nutricost", "Toniiq",
+    "Nammex-supplied private labels",
+]
+
+
+def _coa_cell(kind, text):
+    cls = {"yes": "yes", "part": "unk", "no": "no"}[kind]
+    label = {"yes": "Published", "part": "On request", "no": "Not available"}[kind]
+    return f'<span class="{cls}">{label}</span><br><span class="scoreno">{html.escape(text)}</span>'
+
+
+def _comparison_table(rows):
+    head = "".join(f"<th>{html.escape(c)}</th>" for c in COMPARISON_COLUMNS)
+    body = ""
+    for r in rows:
+        stars = "★" * r["stars"] + "☆" * (5 - r["stars"])
+        body += (
+            "<tr>"
+            f'<td class="brandcell"><a href="{r["url"]}" target="_blank" rel="noopener nofollow">'
+            f'{html.escape(r["brand"])}</a><span>{html.escape(r["product"])}</span></td>'
+            f'<td>{html.escape(r["part"])}</td>'
+            f'<td>{html.escape(r["extraction"])}</td>'
+            f'<td>{html.escape(r["actives"])}</td>'
+            f"<td>{_coa_cell(*r['coa'])}</td>"
+            f'<td>{html.escape(r["format"])}</td>'
+            f'<td><span class="stars">{stars}</span>'
+            f'<span class="scoreno">{html.escape(r["why"])}</span></td>'
+            "</tr>"
+        )
+    return (f'<div class="tscroll"><table class="ctable"><thead><tr>{head}</tr></thead>'
+            f"<tbody>{body}</tbody></table></div>")
+
+
+def comparison_html():
+    excluded = "".join(
+        f"<li><strong>{html.escape(n)}</strong> &mdash; {html.escape(t)}</li>"
+        for n, t in EXCLUDED_ROWS)
+    pending = ", ".join(html.escape(b) for b in PENDING_BRANDS)
+    return f"""
+<h2 id="compare">Lion's Mane extracts compared</h2>
+<p>Every figure below is quoted from the brand's own published product page or certificate of
+analysis. Where a number is not published, the cell says so instead of carrying an estimate.
+Rating is the five-criteria score set out in our <a href="/methodology/">methodology</a>:
+part used, extraction, documented active-compound testing, COA access and value.</p>
+{_comparison_table(LIONS_MANE_ROWS)}
+
+<h2 id="compare-reishi">Reishi extracts compared</h2>
+<p>Reishi is scored on the same five criteria, with one difference: a hot-water-only Reishi
+cannot carry triterpenes, so a published ganoderic-acid figure counts here and does not on
+Lion's Mane.</p>
+{_comparison_table(REISHI_ROWS)}
+
+<div class="commercial">
+<span class="marker">Commercial link: we sell this product</span>
+Ahara Mushrooms sells an alcohol-free liquid Reishi and Lion's Mane extract, which is one more
+option in this format and is not scored in the tables above.
+<a href="https://aharamushrooms.com/" target="_blank" rel="sponsored noopener">aharamushrooms.com</a>
+</div>
+
+<h3>Excluded from the extract comparison, and why</h3>
+<ul>{excluded}</ul>
+
+<p class="pending"><strong>Not yet scored:</strong> {pending}. These are extract-labelled products
+whose active-compound testing we have not been able to confirm from a published COA. They enter
+the tables when that documentation is in hand, with whatever it shows.</p>
+"""
+
 def build_home(posts):
+    comparison = comparison_html()
     featured = sorted(posts, key=lambda x: x["date_published"], reverse=True)[:6]
     cards = "".join(
         f'<a class="card" href="{p["path"]}"><div><span class="tag">{html.escape(p["category"])}</span>'
@@ -335,13 +514,17 @@ def build_home(posts):
         for p in featured)
     body = f"""
 <section class="hero"><div class="wrap">
-<h1>Independent reviews of mushroom extracts</h1>
-<p>We compare Lion's Mane and Reishi supplements against the same published criteria:
-species and part used, extraction method, documented beta-glucan testing, certificate of
-analysis availability, and price per labeled serving. No sponsored placements.</p>
+<h1>Lion&#39;s Mane and Reishi extracts, compared on published numbers</h1>
+<p>Every product here is judged against the same five criteria: species and part used,
+extraction method, documented active-compound testing, certificate of analysis access, and
+price per labeled serving. Figures come from the brand&#39;s own page or COA. A number nobody
+publishes is recorded as not published, never estimated.</p>
 </div></section>
+<div class="wrap wide">
+{comparison}
+</div>
 <div class="wrap">
-<div class="note">New here? Start with the <a href="/guide/">Buyer's Guide</a> to read a label
+<div class="note">New here? Start with the <a href="/guide/">Buyer&#39;s Guide</a> to read a label
 and a COA, then see <a href="/methodology/">how products are scored</a>.</div>
 <h2>Latest articles</h2>
 <div class="cards">{cards}</div>
@@ -349,8 +532,8 @@ and a COA, then see <a href="/methodology/">how products are scored</a>.</div>
 </div>
 """
     write("/", page_shell(
-        title=f"{SITE_NAME}: Independent Lion's Mane & Reishi Extract Reviews",
-        description="Independent, criteria-based reviews of Lion's Mane and Reishi mushroom extracts: labels, COAs, extraction, and value.",
+        title=f"{SITE_NAME}: Lion's Mane & Reishi Extract Comparison and Reviews",
+        description="Lion's Mane and Reishi extracts compared on published beta-glucan figures, COA access, extraction method and part used.",
         canonical=f"{BASE_URL}/", body=body, active_path="/"))
 
 
